@@ -97,7 +97,7 @@ main {
   color: white;
   text-decoration: none;
   transition: color 0.5s ease;
-  word-break: break-all;
+  word-wrap: break-word;
 }
 
 #date {

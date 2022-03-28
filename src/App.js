@@ -5,7 +5,7 @@ import FooterNavigation from "./Components/FooterNavigation";
 import HeaderNavigation from "./Components/HeaderNavigation";
 import axios from "axios";
 
-const results_per_page = 6;
+const results_per_page = 12;
 
 const App = () => {
     const [books, setBooks] = useState([]);
