@@ -16,18 +16,19 @@ const App = () => {
 
     const[query, setQuery] = useState("")
 
-    const fetchBooks = async (req) => {
-        if(!req)
-            req = "flaubert"
+    const fetchBooks = async () => {
+        if(!query)
+            setQuery('flaubert')
         setLoading(true);
-        const res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=inauthor:${req}&maxResults=40`);
+        const res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=inauthor:${query}&maxResults=40`);
         
         setBooks(res.data.items);
         setLoading(false);
     };
 
     useEffect(() => {
-        fetchBooks(query);
+        fetchBooks();
+        paginate(1);
         return () => {
             setBooks();
         };
@@ -39,10 +40,10 @@ const App = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
     
     let currentBooks = [];
-    let booksLength = 0
+    let maxPage = 1;
     if(books){
         currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
-        booksLength = books.length;
+        maxPage = Math.ceil(books.length / booksPerPage);
     }
 
     return (
@@ -57,7 +58,7 @@ const App = () => {
             />
             <FooterNavigation
                 pageNumber={currentPage}
-                maxPages={Math.ceil(booksLength / booksPerPage)}
+                maxPages={maxPage}
                 paginate={paginate}
             />
         </div>
