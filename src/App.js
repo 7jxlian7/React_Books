@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import Books from "./Components/Books";
 import FooterNavigation from "./Components/FooterNavigation";
 import HeaderNavigation from "./Components/HeaderNavigation";
+
 import axios from "axios";
 
 const results_per_page = 12;
@@ -12,52 +13,51 @@ const App = () => {
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [booksPerPage] = useState(results_per_page);
-    const [query, setQuery] = useState("");
+
+    const[query, setQuery] = useState("")
+
+    const fetchBooks = async (req) => {
+        if(!req)
+            req = "flaubert"
+        setLoading(true);
+        const res = await axios.get(`https://www.googleapis.com/books/v1/volumes?q=inauthor:${req}&maxResults=40`);
+        
+        setBooks(res.data.items);
+        setLoading(false);
+    };
 
     useEffect(() => {
-        const fetchBooks = async () => {
-            setLoading(true);
-            const res = await axios.get('https://www.googleapis.com/books/v1/volumes?q=inauthor:flaubert&maxResults=40');
-            
-            setBooks(res.data.items);
-            setLoading(false);
-        };
-
-        fetchBooks();
-
+        fetchBooks(query);
         return () => {
-            setBooks({});
+            setBooks();
         };
-    }, []);
+    }, [query]);
 
     const indexOfLastBook = currentPage * booksPerPage;
     const indexOfFirstBook = indexOfLastBook - booksPerPage;
     
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
     
-    // Recherche paginée des livres, si la recherche est vide, on affiche tous les livres
-    let myBooks = books
-    if(query != "") {
-        myBooks = books.filter(book => {
-            return book.volumeInfo.title.toLowerCase().includes(query.toLowerCase());
-        });
+    let currentBooks = [];
+    let booksLength = 0
+    if(books){
+        currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
+        booksLength = books.length;
     }
-    const currentBooks = myBooks.slice(indexOfFirstBook, indexOfLastBook);
-    
+
     return (
         <div>
             <HeaderNavigation 
-                query={query}
                 setQuery={setQuery}
+                search={query}
             />
             <Books 
                 books={currentBooks}
                 loading={loading}
-                query={query}
             />
             <FooterNavigation
                 pageNumber={currentPage}
-                maxPages={Math.ceil(myBooks.length / booksPerPage)}
+                maxPages={Math.ceil(booksLength / booksPerPage)}
                 paginate={paginate}
             />
         </div>

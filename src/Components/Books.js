@@ -5,6 +5,9 @@ const Books = ({ books, loading }) => {
     if (loading)
         return <h2 className="loading-info">Chargement...</h2>;
 
+    if (!books.length)
+        return <h2 className="loading-info">Aucun résultat</h2>;
+
     return (
         <main>
             {books.map((book) => (

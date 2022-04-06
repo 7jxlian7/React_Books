@@ -1,20 +1,13 @@
 import SearchBar from "./SearchBar";
 
-const HeaderNavigation = ({query, setQuery}) => {
-
-
+const HeaderNavigation = ({setQuery, query}) => {
     return (
         <header>
             <h1>Google API</h1>
             <div className="search-menu">
                 <SearchBar 
-                    query={query}
                     setQuery={setQuery}
-                />
-                <input
-                    type="submit"
-                    id="search-button"
-                    value="Rechercher"
+                    query={query}
                 />
             </div>
         </header>
